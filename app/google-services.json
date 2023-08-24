@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "523403014634",
+    "project_id": "bookshelfapp-60f9a",
+    "storage_bucket": "bookshelfapp-60f9a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523403014634:android:e7954b99d45c2ec5104293",
+        "android_client_info": {
+          "package_name": "com.example.bookshelfapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523403014634-6ccqbr81pfjn5ggd251jn0s568q6umg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2IPx1Lpw1Z8j1RSh7ZzlIAR5FbHg3R-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523403014634-6ccqbr81pfjn5ggd251jn0s568q6umg4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
