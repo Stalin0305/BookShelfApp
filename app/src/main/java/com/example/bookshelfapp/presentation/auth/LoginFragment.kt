@@ -75,6 +75,7 @@ class LoginFragment : Fragment() {
 
                     is AuthState.Success -> {
                         hideProgressBar()
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                         Log.d("Login", "Success")
                     }
 

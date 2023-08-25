@@ -19,4 +19,14 @@
     <string name="already_registered">Already registered?</string>
     <string name="login">Login</string>
     <string name="not_registered">Not registered?</string>
+
+    //Chips
+    <string name="title_chip">Title</string>
+    <string name="hits_chip">Hits</string>
+    <string name="favs_chip">Favourites</string>
+    <string name="ascending_order">Ascending order</string>
+    <string name="log_out">Log out</string>
+    <string name="bookshelf">BookShelf</string>
+
+
 </resources>

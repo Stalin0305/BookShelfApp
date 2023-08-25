@@ -131,6 +131,7 @@ class RegistrationFragment : Fragment() {
                     }
                     is AuthState.Success -> {
                         hideProgressBar()
+                        findNavController().navigate(R.id.action_registrationFragment_to_homeFragment   )
                     }
                     null -> {
                         hideProgressBar()
