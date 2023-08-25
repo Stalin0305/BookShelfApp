@@ -5,6 +5,8 @@ import android.content.Context
 import com.example.bookshelfapp.BookShelfApp
 import com.example.bookshelfapp.data.repository.auth.AuthRepository
 import com.example.bookshelfapp.data.repository.auth.AuthRepositoryImpl
+import com.example.bookshelfapp.data.services.BookServiceApi
+import com.example.bookshelfapp.data.utils.Constants.BASE_URL
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -14,6 +16,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
@@ -39,6 +43,21 @@ class AppModule {
     @Provides
     fun providesMainApplicationInstance(@ApplicationContext context: Context): BookShelfApp {
         return context as BookShelfApp
+    }
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(): Retrofit {
+        return  Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesBookServiceApi(retrofit: Retrofit): BookServiceApi {
+        return retrofit.create(BookServiceApi::class.java)
     }
 
 

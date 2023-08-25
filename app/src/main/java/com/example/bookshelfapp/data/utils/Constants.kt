@@ -8,4 +8,6 @@ object Constants {
     const val EMAIL = "email"
     const val UID = "uid"
     const val COUNTRY = "country"
+
+    const val BASE_URL = "https://www.jsonkeeper.com"
 }
