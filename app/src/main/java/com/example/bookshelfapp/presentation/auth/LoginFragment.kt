@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -58,13 +59,40 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.loginFlow.collectLatest {
                 when (it) {
-                    is AuthState.Failure -> Log.d("Login", "Failure, ${it.errorMessage}")
-                    AuthState.Loading -> Log.d("Login", "Loading")
-                    is AuthState.Success -> Log.d("Login", "Success")
-                    null -> Log.d("Login", "null")
+                    is AuthState.Failure -> {
+                        hideProgressBar()
+                        Toast.makeText(
+                            requireContext(),
+                            it.errorMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    AuthState.Loading -> {
+                        showProgressBar()
+                        Log.d("Login", "Loading")
+                    }
+
+                    is AuthState.Success -> {
+                        hideProgressBar()
+                        Log.d("Login", "Success")
+                    }
+
+                    null -> {
+                        hideProgressBar()
+                        Log.d("Login", "null")
+                    }
                 }
             }
         }
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.clProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        binding.progressBar.clProgressBar.visibility = View.GONE
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -117,13 +118,35 @@ class RegistrationFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.registrationFlow.collectLatest {
                 when (it) {
-                    is AuthState.Failure -> Log.d("Registration", "Failure, ${it.errorMessage}")
-                    AuthState.Loading -> Log.d("Registration", "Loading")
-                    is AuthState.Success -> Log.d("Registration", "Success")
-                    null -> Log.d("Registration", "Failure")
+                    is AuthState.Failure -> {
+                        hideProgressBar()
+                        Toast.makeText(
+                            requireContext(),
+                            it.errorMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    AuthState.Loading -> {
+                        showProgressBar()
+                    }
+                    is AuthState.Success -> {
+                        hideProgressBar()
+                    }
+                    null -> {
+                        hideProgressBar()
+                        Log.d("Registration", "Failure")
+                    }
                 }
             }
         }
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.clProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        binding.progressBar.clProgressBar.visibility = View.GONE
     }
 
     override fun onDestroyView() {
