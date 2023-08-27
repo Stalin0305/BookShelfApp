@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.bookshelfapp.R
 import com.example.bookshelfapp.databinding.FragmentHomeBinding
 import com.example.bookshelfapp.presentation.auth.AuthViewModel
@@ -21,6 +22,9 @@ class HomeFragment : Fragment() {
         get() = _binding!!
 
     private val authViewModel by viewModels<AuthViewModel>()
+    private val bookShelfViewModel by viewModels<BookShelfViewModel>()
+
+    private val args: HomeFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +34,14 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        bookShelfViewModel.currentUserInfo = args.currentUserInfo
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.toolbar.logOutButton.setOnClickListener {
             authViewModel.logOut()
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)

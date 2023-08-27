@@ -5,7 +5,10 @@ import android.content.Context
 import com.example.bookshelfapp.BookShelfApp
 import com.example.bookshelfapp.data.repository.auth.AuthRepository
 import com.example.bookshelfapp.data.repository.auth.AuthRepositoryImpl
+import com.example.bookshelfapp.data.repository.bookshelf.BookShelfRepository
+import com.example.bookshelfapp.data.repository.bookshelf.BookShelfRepositoryImpl
 import com.example.bookshelfapp.data.services.BookServiceApi
+import com.example.bookshelfapp.data.usecase.GetBooksUseCase
 import com.example.bookshelfapp.data.utils.Constants.BASE_URL
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -58,6 +61,16 @@ class AppModule {
     @Provides
     fun providesBookServiceApi(retrofit: Retrofit): BookServiceApi {
         return retrofit.create(BookServiceApi::class.java)
+    }
+
+    @Provides
+    fun providesBookShelfRepository(impl: BookShelfRepositoryImpl): BookShelfRepository {
+        return impl
+    }
+
+    @Provides
+    fun providesGetBooksUseCase(repository: BookShelfRepository): GetBooksUseCase {
+        return GetBooksUseCase(repository)
     }
 
 

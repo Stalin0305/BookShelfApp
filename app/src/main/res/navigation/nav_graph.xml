@@ -44,6 +44,10 @@
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <argument
+            app:nullable="true"
+            android:name="currentUserInfo"
+            app:argType="com.example.bookshelfapp.data.models.UserInfo"/>
     </fragment>
     <fragment
         android:id="@+id/bookDetailFragment"

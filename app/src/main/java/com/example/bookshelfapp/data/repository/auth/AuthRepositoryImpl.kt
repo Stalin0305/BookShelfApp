@@ -4,6 +4,7 @@ import com.example.bookshelfapp.data.models.AuthState
 import com.example.bookshelfapp.data.models.UserInfo
 import com.example.bookshelfapp.data.utils.Constants.COUNTRY
 import com.example.bookshelfapp.data.utils.Constants.EMAIL
+import com.example.bookshelfapp.data.utils.Constants.FAVOURITE_LIST
 import com.example.bookshelfapp.data.utils.Constants.NAME
 import com.example.bookshelfapp.data.utils.Constants.UID
 import com.example.bookshelfapp.data.utils.Constants.USER_COLLECTION
@@ -11,8 +12,6 @@ import com.example.bookshelfapp.data.utils.await
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -72,7 +71,8 @@ class AuthRepositoryImpl @Inject constructor(
                                     name = data[NAME].toString(),
                                     email = data[EMAIL].toString(),
                                     uid = data[UID].toString(),
-                                    country = data[COUNTRY].toString()
+                                    country = data[COUNTRY].toString(),
+                                    favouritesList = data[FAVOURITE_LIST] as? ArrayList<String> ?: arrayListOf()
                                 )
                                 continuation.resume(AuthState.Success(userInfo))
                             }
@@ -92,5 +92,21 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun logOut() {
         firebaseAuth.signOut()
+    }
+
+    override suspend fun getFavourites(uid: String): ArrayList<String> {
+        return suspendCoroutine { continuation ->
+            fireStore.collection(USER_COLLECTION).document(uid).get()
+                .addOnSuccessListener { document ->
+                    document?.data?.let { data ->
+                        continuation.resume(
+                            data[FAVOURITE_LIST] as? ArrayList<String> ?: arrayListOf()
+                        )
+                    }
+                }
+                .addOnFailureListener {
+                    continuation.resume(arrayListOf())
+                }
+        }
     }
 }

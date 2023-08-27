@@ -8,4 +8,5 @@ interface AuthRepository {
     suspend fun register(userName: String, password: String, email: String, country: String): AuthState
     suspend fun login(userName: String, password: String): AuthState
     fun logOut()
+    suspend fun getFavourites(uid: String): List<String>
 }

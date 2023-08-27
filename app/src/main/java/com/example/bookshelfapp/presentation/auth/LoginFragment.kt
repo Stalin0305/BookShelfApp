@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.bookshelfapp.R
 import com.example.bookshelfapp.data.models.AuthState
 import com.example.bookshelfapp.databinding.FragmentLoginBinding
-import com.example.bookshelfapp.databinding.FragmentRegistrationBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,7 +74,10 @@ class LoginFragment : Fragment() {
 
                     is AuthState.Success -> {
                         hideProgressBar()
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        val dir = LoginFragmentDirections.actionLoginFragmentToHomeFragment(
+                            viewModel.currentUser
+                        )
+                        findNavController().navigate(dir)
                         Log.d("Login", "Success")
                     }
 
