@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="@dimen/four_dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbarHome">
 
@@ -77,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/eight_dp"
         android:orientation="horizontal"
+        android:padding="@dimen/four_dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/llChipLayout">
 
