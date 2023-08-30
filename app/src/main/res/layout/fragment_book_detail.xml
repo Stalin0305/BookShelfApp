@@ -8,72 +8,87 @@
     android:padding="@dimen/eight_dp"
     tools:context=".presentation.bookshelf.BookDetailFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clBookHeader"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/eight_dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/ivBookIcon"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_favourite"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            android:padding="@dimen/eight_dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvBookTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/eight_dp"
-            android:text="safafaafk afafkafakfafk faksfas"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ivBookIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clBookHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/eight_dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvBookHits"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/eight_dp"
-            android:text="Hits: 21414121"
-            app:layout_constraintStart_toEndOf="@id/ivBookIcon"
-            app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
+                <ImageView
+                    android:id="@+id/ivBookIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvBookTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/eight_dp"
+                    app:layout_constraintHorizontal_weight="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivBookIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvBookHits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="2"
+                    android:layout_margin="@dimen/eight_dp"
+                    app:layout_constraintStart_toEndOf="@id/ivBookIcon"
+                    app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvAlias"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/eight_dp"
-        android:padding="@dimen/eight_dp"
-        android:text="Alias : asfadfaf afaslfasmfl afasf a" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvAlias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/eight_dp"
+                android:padding="@dimen/eight_dp" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvUpdatedOn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/eight_dp"
-        android:padding="@dimen/eight_dp" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvUpdatedOn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/eight_dp"
+                android:padding="@dimen/eight_dp" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/eight_dp"
-        android:layout_weight="2"
-        android:padding="@dimen/four_dp"
-        android:text="@string/book_desc" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/eight_dp"
+                android:layout_weight="2"
+                android:padding="@dimen/four_dp"
+                android:text="@string/book_desc" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/go_back_button_text"
-        android:textAlignment="center" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/go_back_button_text"
+                android:textAlignment="center" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

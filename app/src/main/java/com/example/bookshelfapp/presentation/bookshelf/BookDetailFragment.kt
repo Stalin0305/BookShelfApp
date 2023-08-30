@@ -58,7 +58,10 @@ class BookDetailFragment : Fragment() {
         binding.tvBookTitle.text = bookItem?.title
         binding.tvBookHits.text = String.format(getString(R.string.number_of_hits), bookItem?.hits)
         binding.tvAlias.text = String.format(getString(R.string.alias), bookItem?.alias)
-        binding.tvUpdatedOn.text = String.format(getString(R.string.updated_on), convertTimeToDate(bookItem?.lastChapterDate))
+        binding.tvUpdatedOn.text = String.format(
+            getString(R.string.updated_on),
+            bookShelfViewModel.convertTimeToDate(bookItem?.lastChapterDate)
+        )
 
         Glide.with(requireContext())
             .load(bookItem?.image)
@@ -67,13 +70,5 @@ class BookDetailFragment : Fragment() {
             .into(binding.ivBookIcon)
     }
 
-    private fun convertTimeToDate(value: Int?): String {
-        value?.let {
-            val date = Date(value.toLong() * 1000)
-            val dateFormat = SimpleDateFormat("dd MM yyyy", Locale.getDefault())
-            return dateFormat.format(date)
-        }
-        return "Invalid date format"
 
-    }
 }

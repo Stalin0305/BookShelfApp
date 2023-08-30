@@ -21,6 +21,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -229,5 +232,25 @@ class BookShelfViewModel @Inject constructor(
                     RemoveFavouriteUIState.RemoveFavouriteSuccessState(bookItem, position)
             }
         }
+    }
+
+    fun convertTimeToDate(value: Int?): String {
+        value?.let {
+            val date = Date(value.toLong() * 1000)
+            val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+            var formattedDate = dateFormat.format(date)
+            val day = SimpleDateFormat("d").format(date).toInt()
+
+            formattedDate = formattedDate.replaceRange(0, 2, "")
+            formattedDate = when (day) {
+                1, 21, 31 -> "${day}st $formattedDate"
+                2, 22 -> "${day}nd $formattedDate"
+                3, 23 -> "${day}rd $formattedDate"
+                else -> "${day}th $formattedDate"
+            }
+            return formattedDate
+
+        }
+        return "Invalid date format"
     }
 }
