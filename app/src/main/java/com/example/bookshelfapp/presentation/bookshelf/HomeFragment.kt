@@ -41,10 +41,6 @@ class HomeFragment : Fragment() {
 
     private val args: HomeFragmentArgs by navArgs()
 
-    private var currentSortOrderType: OrderType = OrderType.Ascending
-
-    private var currentSortType: BooksOrder = BooksOrder.Title(currentSortOrderType)
-
     private var bookListAdapter: BookListAdapter? = null
 
     override fun onCreateView(
@@ -64,7 +60,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initializeViews() {
-        bookShelfViewModel.fetchBookListAndFavourites(currentSortType)
+        bookShelfViewModel.fetchBookListAndFavourites(bookShelfViewModel.currentSortType)
         binding.sortChipGroup.check(R.id.titleChip)
         binding.switchAscendingOrder.isChecked = true
 
@@ -98,20 +94,23 @@ class HomeFragment : Fragment() {
                 when (chipName.toString()) {
                     getString(R.string.hits_chip) -> {
                         Log.d("HomeFragment", chipName.toString())
-                        currentSortType = BooksOrder.Hits(currentSortOrderType)
+                        bookShelfViewModel.currentSortType = BooksOrder.Hits(
+                            bookShelfViewModel.currentSortOrderType)
                         refreshSortOrder()
 
                     }
 
                     getString(R.string.title_chip) -> {
                         Log.d("HomeFragment", chipName.toString())
-                        currentSortType = BooksOrder.Title(currentSortOrderType)
+                        bookShelfViewModel.currentSortType = BooksOrder.Title(
+                            bookShelfViewModel.currentSortOrderType)
                         refreshSortOrder()
 
                     }
 
                     getString(R.string.favs_chip) -> {
-                        currentSortType = BooksOrder.Favs(currentSortOrderType)
+                        bookShelfViewModel.currentSortType = BooksOrder.Favs(
+                            bookShelfViewModel.currentSortOrderType)
                         refreshSortOrder()
                     }
                 }
@@ -121,12 +120,12 @@ class HomeFragment : Fragment() {
         binding.switchAscendingOrder.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Log.d("HomeFragment", "Switch is checked")
-                currentSortOrderType = OrderType.Ascending
-                currentSortType.orderType = currentSortOrderType
+                bookShelfViewModel.currentSortOrderType = OrderType.Ascending
+                bookShelfViewModel.currentSortType.orderType = bookShelfViewModel.currentSortOrderType
                 refreshSortOrder()
             } else {
-                currentSortOrderType = OrderType.Descending
-                currentSortType.orderType = currentSortOrderType
+                bookShelfViewModel.currentSortOrderType = OrderType.Descending
+                bookShelfViewModel.currentSortType.orderType = bookShelfViewModel.currentSortOrderType
                 refreshSortOrder()
             }
         }
@@ -134,7 +133,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshSortOrder() {
-        val sortedList = bookShelfViewModel.sortBookListBasedOnOrder(currentSortType)
+        val sortedList = bookShelfViewModel.sortBookListBasedOnOrder(bookShelfViewModel.currentSortType)
         bookListAdapter?.updateList(sortedList)
         bookListAdapter?.notifyDataSetChanged()
     }
@@ -214,7 +213,7 @@ class HomeFragment : Fragment() {
         hideProgressBar()
         binding.layoutError.clBookListError.isVisible = true
         binding.layoutError.btnTryAgain.setOnClickListener {
-            bookShelfViewModel.fetchBookListAndFavourites(currentSortType)
+            bookShelfViewModel.fetchBookListAndFavourites(bookShelfViewModel.currentSortType)
         }
     }
 

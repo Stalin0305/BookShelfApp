@@ -49,6 +49,9 @@ class BookShelfViewModel @Inject constructor(
 
     var bookDetailItem: BookItem? = null
 
+    var currentSortOrderType: OrderType = OrderType.Ascending
+    var currentSortType: BooksOrder = BooksOrder.Title(currentSortOrderType)
+
     fun fetchBookListAndFavourites(order: BooksOrder) {
         _bookListFlow.value = BookListUiState.BookListUILoadingState
         viewModelScope.launch {
