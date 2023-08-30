@@ -1,5 +1,9 @@
 package com.example.bookshelfapp.presentation.bookshelf.placeholders
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class BookItem(
     val id : String,
     val image : String,
@@ -8,4 +12,4 @@ data class BookItem(
     val title : String,
     val lastChapterDate : Int,
     var isFavourite: Boolean = false
-)
+): Parcelable

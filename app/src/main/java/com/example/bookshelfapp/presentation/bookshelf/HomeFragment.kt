@@ -70,7 +70,10 @@ class HomeFragment : Fragment() {
 
         bookListAdapter = BookListAdapter(
             bookItemList = bookShelfViewModel.finalBookItemList,
-            onBookItemClicked = {},
+            onBookItemClicked = {
+                val dir = HomeFragmentDirections.actionHomeFragmentToBookDetailFragment(it)
+                findNavController().navigate(dir)
+            },
             onFavouriteIconClicked = { item, isChecked, position ->
                 if (isChecked) {
                     bookShelfViewModel.addToFavourites(item, position)
@@ -84,7 +87,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun clickListeners() {
-        binding.toolbar.logOutButton.setOnClickListener {
+        binding.toolbarHome.logOutButton.setOnClickListener {
             authViewModel.logOut()
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }

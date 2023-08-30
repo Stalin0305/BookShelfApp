@@ -41,8 +41,10 @@ class BookShelfViewModel @Inject constructor(
     val removeFavouriteFlow: StateFlow<RemoveFavouriteUIState?> = _removeFavouriteFlow
 
     var finalBookItemList: MutableList<BookItem> = mutableListOf()
-    var bookList: List<BookInfo> = mutableListOf()
-    var favouritesList: ArrayList<String>? = arrayListOf()
+    private var bookList: List<BookInfo> = mutableListOf()
+    private var favouritesList: ArrayList<String>? = arrayListOf()
+
+    var bookDetailItem: BookItem? = null
 
     fun fetchBookListAndFavourites(order: BooksOrder) {
         _bookListFlow.value = BookListUiState.BookListUILoadingState

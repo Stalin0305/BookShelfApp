@@ -24,6 +24,8 @@
     <string name="title_chip">Title</string>
     <string name="hits_chip">Hits</string>
     <string name="favs_chip">Favourites</string>
+
+
     <string name="ascending_order">Ascending order</string>
     <string name="log_out">Log out</string>
     <string name="bookshelf">BookShelf</string>
@@ -32,5 +34,11 @@
     <string name="try_again">Try again</string>
     <string name="sort_the_books">Sort the books</string>
 
+    <string name="go_back_button_text">Go back</string>
+    <string name="alias">Alias: %s</string>
+    <string name="updated_on">Updated on: %s</string>
+    <string name="book_desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tristique imperdiet lacus, ut dictum ex porttitor viverra. Fusce nec tempus nisi. Phasellus a lectus ligula. Pellentesque non tempus sapien. Pellentesque non orci orci. Mauris laoreet risus sapien, nec porttitor augue tempor vel. Duis at arcu ante.
+Donec urna enim, finibus sed lobortis eget, fringilla eu diam. Sed sagittis ut mi vel dapibus. Quisque vitae blandit leo. Nam efficitur congue fermentum. Fusce at leo metus. Sed vehicula odio nisi, a sagittis tellus tristique ac. Nunc facilisis purus at fringilla rhoncus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nunc a quam ut nunc malesuada sagittis. Fusce eget arcu id erat laoreet commodo. Cras ut diam vehicula, consequat mauris vitae, porttitor tortor. Aliquam et risus aliquet, mattis tortor placerat, porttitor est. Vivamus vitae consequat tellus, sit amet lobortis metus. Morbi erat leo, luctus nec posuere eget, lacinia ac quam. Nam vitae scelerisque mauris, efficitur bibendum elit.
+Donec ac mi euismod, pharetra mi a, molestie nisl. Phasellus eleifend tincidunt diam a aliquam. Quisque leo nunc, finibus id ligula sed, rutrum faucibus erat. Suspendisse sagittis condimentum pharetra. Nullam et massa dolor. Curabitur tincidunt ultricies eros, id eleifend turpis vestibulum.</string>
 
 </resources>
