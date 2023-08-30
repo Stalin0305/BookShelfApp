@@ -46,11 +46,7 @@ class LoginFragment : Fragment() {
             viewModel.login(email, password)
         }
         binding.tvSignUpButton.setOnClickListener {
-            if (findNavController().previousBackStackEntry != null) {
-                findNavController().popBackStack()
-            } else {
-                findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
-            }
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
     }
 

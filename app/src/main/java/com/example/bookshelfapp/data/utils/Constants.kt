@@ -8,7 +8,7 @@ object Constants {
     const val EMAIL = "email"
     const val UID = "uid"
     const val COUNTRY = "country"
-    const val FAVOURITE_LIST = "favouriteList"
+    const val FAVOURITE_LIST = "favouritesList"
 
     const val BASE_URL = "https://www.jsonkeeper.com"
 }

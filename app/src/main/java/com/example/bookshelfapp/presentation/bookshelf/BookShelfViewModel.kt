@@ -11,8 +11,11 @@ import com.example.bookshelfapp.data.repository.bookshelf.BookFetchStatus
 import com.example.bookshelfapp.data.usecase.GetBooksUseCase
 import com.example.bookshelfapp.data.utils.BooksOrder
 import com.example.bookshelfapp.data.utils.OrderType
+import com.example.bookshelfapp.presentation.bookshelf.placeholders.AddFavouriteUIState
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiState
+import com.example.bookshelfapp.presentation.bookshelf.placeholders.RemoveFavouriteUIState
+import com.example.bookshelfapp.utils.EMPTY_STRING
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +33,12 @@ class BookShelfViewModel @Inject constructor(
 
     private val _bookListFlow = MutableStateFlow<BookListUiState?>(null)
     val bookListFlow: StateFlow<BookListUiState?> = _bookListFlow
+
+    private val _addFavouriteFlow = MutableStateFlow<AddFavouriteUIState?>(null)
+    val addFavouriteFlow: StateFlow<AddFavouriteUIState?> = _addFavouriteFlow
+
+    private val _removeFavouriteFlow = MutableStateFlow<RemoveFavouriteUIState?>(null)
+    val removeFavouriteFlow: StateFlow<RemoveFavouriteUIState?> = _removeFavouriteFlow
 
     var finalBookItemList: MutableList<BookItem> = mutableListOf()
     var bookList: List<BookInfo> = mutableListOf()
@@ -186,5 +195,37 @@ class BookShelfViewModel @Inject constructor(
 
     fun sortBookListBasedOnOrder(order: BooksOrder): List<BookItem> {
         return mapBookInfoAndFavourites(favouritesList, bookList, order)
+    }
+
+    fun addToFavourites(bookItem: BookItem, position: Int) {
+        viewModelScope.launch {
+            val result = authRepositoryImpl.addToFavourites(
+                currentUserInfo?.uid ?: EMPTY_STRING,
+                bookItem.id
+            )
+            if (result.isEmpty()) {
+                _addFavouriteFlow.value = AddFavouriteUIState.AddFavouriteErrorState
+            } else {
+                favouritesList = result
+                _addFavouriteFlow.value =
+                    AddFavouriteUIState.AddFavouriteSuccessState(bookItem, position)
+            }
+        }
+    }
+
+    fun removeFromFavourites(bookItem: BookItem, position: Int) {
+        viewModelScope.launch {
+            val result = authRepositoryImpl.removeFromFavourites(
+                currentUserInfo?.uid ?: EMPTY_STRING,
+                bookItem.id
+            )
+            if (result.isEmpty()) {
+                _removeFavouriteFlow.value = RemoveFavouriteUIState.RemoveFavouriteErrorState
+            } else {
+                favouritesList = result
+                _removeFavouriteFlow.value =
+                    RemoveFavouriteUIState.RemoveFavouriteSuccessState(bookItem, position)
+            }
+        }
     }
 }

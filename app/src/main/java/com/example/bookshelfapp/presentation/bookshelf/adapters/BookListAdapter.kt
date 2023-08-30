@@ -14,7 +14,7 @@ import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
 
 class BookListAdapter(
     private var bookItemList: List<BookItem>,
-    var onFavouriteIconClicked: (BookItem) -> Unit,
+    var onFavouriteIconClicked: (BookItem, Boolean, Int) -> Unit,
     var onBookItemClicked: (BookItem) -> Unit
 ) : RecyclerView.Adapter<BookItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookItemViewHolder {
@@ -32,8 +32,8 @@ class BookListAdapter(
         holder.bind(
             position,
             item,
-            onFavouriteIconClicked = { bookItem ->
-                onFavouriteIconClicked(bookItem)
+            onFavouriteIconClicked = { bookItem, isChecked, position ->
+                onFavouriteIconClicked(bookItem, isChecked, position)
             },
             onBookItemClicked = { bookItem ->
                 onBookItemClicked(bookItem)
@@ -54,11 +54,11 @@ class BookItemViewHolder(val binding: LayoutBookItemBinding, val context: Contex
     fun bind(
         position: Int,
         item: BookItem,
-        onFavouriteIconClicked: (BookItem) -> Unit,
+        onFavouriteIconClicked: (BookItem, Boolean, Int) -> Unit,
         onBookItemClicked: (BookItem) -> Unit
     ) {
         with(binding) {
-
+            var isChecked = item.isFavourite
             //Get Primary color of the theme and set it based on the isFavourite flag
             // Create a TypedValue instance to store the resolved color
             val typedValue = TypedValue()
@@ -70,14 +70,20 @@ class BookItemViewHolder(val binding: LayoutBookItemBinding, val context: Contex
             //Set the book details
             tvBookTitle.text = item.title
             tvHits.text = String.format(context.getString(R.string.number_of_hits), item.hits)
-            if (item.isFavourite) {
+            if (isChecked) {
                 btnFavourite.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN)
             } else {
                 btnFavourite.clearColorFilter()
             }
 
             btnFavourite.setOnClickListener {
-                onFavouriteIconClicked(item)
+                isChecked = !isChecked
+                onFavouriteIconClicked(item, isChecked, position)
+                if (isChecked) {
+                    btnFavourite.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN)
+                } else {
+                    btnFavourite.clearColorFilter()
+                }
             }
 
             clBookItem.setOnClickListener {

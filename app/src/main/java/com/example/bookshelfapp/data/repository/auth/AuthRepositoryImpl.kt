@@ -20,6 +20,8 @@ import kotlin.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+const val TAG = "AuthRepositoryImpl"
+
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val fireStore: FirebaseFirestore
@@ -118,7 +120,79 @@ class AuthRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d("AuthRepositoryImpl", "Exception: ${e.message}")
+            Log.d(TAG, "Exception: ${e.message}")
+            arrayListOf<String>()
+        }
+    }
+
+    override suspend fun addToFavourites(uid: String, bookUid: String): ArrayList<String> {
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCoroutine { continuation ->
+                    val docRef = fireStore.collection(USER_COLLECTION).document(uid)
+                    docRef.get()
+                        .addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                val data = document.data
+                                val favouriteList =
+                                    data?.get(FAVOURITE_LIST) as? ArrayList<String> ?: arrayListOf()
+                                favouriteList.add(bookUid)
+                                docRef.update(FAVOURITE_LIST, favouriteList)
+                                    .addOnSuccessListener {
+                                        continuation.resume(favouriteList)
+                                    }
+                                    .addOnFailureListener {
+                                        Log.d(TAG, "Unable to add to favourites")
+                                        continuation.resume(arrayListOf())
+                                    }
+                            }
+                        }
+                        .addOnFailureListener {
+                            continuation.resume(arrayListOf())
+                        }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "Exception: ${e.message}")
+            arrayListOf<String>()
+        }
+    }
+
+    override suspend fun removeFromFavourites(uid: String, bookUid: String): ArrayList<String> {
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCoroutine { continuation ->
+                    val docRef = fireStore.collection(USER_COLLECTION).document(uid)
+                    docRef.get()
+                        .addOnSuccessListener { document ->
+                            if (document.exists()) {
+                                val data = document.data
+                                val favouriteList =
+                                    data?.get(FAVOURITE_LIST) as? ArrayList<String> ?: arrayListOf()
+                                if (favouriteList.contains(bookUid)) {
+                                    favouriteList.remove(bookUid)
+                                    docRef.update(FAVOURITE_LIST, favouriteList)
+                                        .addOnSuccessListener {
+                                            continuation.resume(favouriteList)
+                                        }
+                                        .addOnFailureListener {
+                                            Log.d(TAG, "Unable to remove from favourites")
+                                            continuation.resume(arrayListOf())
+                                        }
+                                }
+
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Unable to fetch document")
+                            continuation.resume(arrayListOf())
+                        }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "Exception: ${e.message}")
             arrayListOf<String>()
         }
     }

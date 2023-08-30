@@ -106,11 +106,7 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.tvLoginButton.setOnClickListener {
-            if (findNavController().previousBackStackEntry != null) {
-                findNavController().popBackStack()
-            } else {
-                findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
-            }
+            findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
         }
     }
 

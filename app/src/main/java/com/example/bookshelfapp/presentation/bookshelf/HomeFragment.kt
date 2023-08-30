@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,8 +19,10 @@ import com.example.bookshelfapp.data.utils.OrderType
 import com.example.bookshelfapp.databinding.FragmentHomeBinding
 import com.example.bookshelfapp.presentation.auth.AuthViewModel
 import com.example.bookshelfapp.presentation.bookshelf.adapters.BookListAdapter
+import com.example.bookshelfapp.presentation.bookshelf.placeholders.AddFavouriteUIState
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiState
+import com.example.bookshelfapp.presentation.bookshelf.placeholders.RemoveFavouriteUIState
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -67,8 +70,14 @@ class HomeFragment : Fragment() {
 
         bookListAdapter = BookListAdapter(
             bookItemList = bookShelfViewModel.finalBookItemList,
-            onBookItemClicked =  {},
-            onFavouriteIconClicked = {}
+            onBookItemClicked = {},
+            onFavouriteIconClicked = { item, isChecked, position ->
+                if (isChecked) {
+                    bookShelfViewModel.addToFavourites(item, position)
+                } else {
+                    bookShelfViewModel.removeFromFavourites(item, position)
+                }
+            }
         )
         binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooks.adapter = bookListAdapter
@@ -136,12 +145,51 @@ class HomeFragment : Fragment() {
                         binding.layoutError.clBookListError.isVisible = false
                         showProgressBar()
                     }
+
                     is BookListUiState.BookListUISuccessState -> {
                         setBookListUI(bookListUiState.bookList)
                     }
+
                     is BookListUiState.BookListUIErrorState -> {
                         setBookListErrorUI()
                     }
+
+                    null -> {}
+                }
+            }
+
+            bookShelfViewModel.addFavouriteFlow.collectLatest { addFavouriteUIState ->
+                when (addFavouriteUIState) {
+                    is AddFavouriteUIState.AddFavouriteErrorState -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to add favourite",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is AddFavouriteUIState.AddFavouriteSuccessState -> {
+                        refreshSortOrder()
+                    }
+
+                    null -> {}
+                }
+            }
+
+            bookShelfViewModel.removeFavouriteFlow.collectLatest { removeFavouriteUIState ->
+                when (removeFavouriteUIState) {
+                    is RemoveFavouriteUIState.RemoveFavouriteErrorState -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to add favourite",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is RemoveFavouriteUIState.RemoveFavouriteSuccessState -> {
+                        refreshSortOrder()
+                    }
+
                     null -> {}
                 }
             }
@@ -172,7 +220,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun hideProgressBar() = run { binding.progressBar.isVisible = false }
-
 
 
 }
