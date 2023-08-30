@@ -1,5 +1,6 @@
 package com.example.bookshelfapp.data.repository.auth
 
+import android.util.Log
 import com.example.bookshelfapp.data.models.AuthState
 import com.example.bookshelfapp.data.models.UserInfo
 import com.example.bookshelfapp.data.utils.Constants.COUNTRY
@@ -12,8 +13,10 @@ import com.example.bookshelfapp.data.utils.await
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Exception
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -72,7 +75,8 @@ class AuthRepositoryImpl @Inject constructor(
                                     email = data[EMAIL].toString(),
                                     uid = data[UID].toString(),
                                     country = data[COUNTRY].toString(),
-                                    favouritesList = data[FAVOURITE_LIST] as? ArrayList<String> ?: arrayListOf()
+                                    favouritesList = data[FAVOURITE_LIST] as? ArrayList<String>
+                                        ?: arrayListOf()
                                 )
                                 continuation.resume(AuthState.Success(userInfo))
                             }
@@ -95,18 +99,27 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFavourites(uid: String): ArrayList<String> {
-        return suspendCoroutine { continuation ->
-            fireStore.collection(USER_COLLECTION).document(uid).get()
-                .addOnSuccessListener { document ->
-                    document?.data?.let { data ->
-                        continuation.resume(
-                            data[FAVOURITE_LIST] as? ArrayList<String> ?: arrayListOf()
-                        )
-                    }
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCoroutine { continuation ->
+                    fireStore.collection(USER_COLLECTION).document(uid).get()
+                        .addOnSuccessListener { document ->
+                            document?.data?.let { data ->
+                                continuation.resume(
+                                    data[FAVOURITE_LIST] as? ArrayList<String> ?: arrayListOf()
+                                )
+
+                            }
+                        }
+                        .addOnFailureListener {
+                            continuation.resume(arrayListOf())
+                        }
                 }
-                .addOnFailureListener {
-                    continuation.resume(arrayListOf())
-                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("AuthRepositoryImpl", "Exception: ${e.message}")
+            arrayListOf<String>()
         }
     }
 }

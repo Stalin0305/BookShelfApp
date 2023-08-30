@@ -12,8 +12,11 @@ import com.example.bookshelfapp.data.usecase.GetBooksUseCase
 import com.example.bookshelfapp.data.utils.BooksOrder
 import com.example.bookshelfapp.data.utils.OrderType
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
+import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,11 +28,11 @@ class BookShelfViewModel @Inject constructor(
 
     var currentUserInfo: UserInfo? = null
 
-    init {
-        fetchBookListAndFavourites(BooksOrder.Title(OrderType.Ascending))
-    }
+    private val _bookListFlow = MutableStateFlow<BookListUiState?>(null)
+    val bookListFlow: StateFlow<BookListUiState?> = _bookListFlow
 
-    private fun fetchBookListAndFavourites(order: BooksOrder) {
+    fun fetchBookListAndFavourites(order: BooksOrder) {
+        _bookListFlow.value = BookListUiState.BookListUILoadingState
         viewModelScope.launch {
             val favouritesFetchJob = async {
                 currentUserInfo?.uid?.let { authRepositoryImpl.getFavourites(it) }
@@ -42,21 +45,24 @@ class BookShelfViewModel @Inject constructor(
             val favouritesList = favouritesFetchJob.await()
             val bookList = bookListJob.await()
 
-            mapBookInfoAndFavourites(favouritesList, bookList, order)
+            val finalList = mapBookInfoAndFavourites(favouritesList, bookList, order) as MutableList<BookItem>
+            if (finalList.isEmpty()) {
+                _bookListFlow.value = BookListUiState.BookListUIErrorState
+            } else {
+                _bookListFlow.value = BookListUiState.BookListUISuccessState(finalList)
+            }
         }
     }
 
     private suspend fun getBooksList(order: BooksOrder): List<BookInfo> {
         var bookInfoList = mutableListOf<BookInfo>()
-        viewModelScope.launch {
-            when (val result = getBooksUseCase.invoke(order)) {
-                is BookFetchStatus.BookFetchSuccess -> {
-                    bookInfoList = result.bookList as MutableList<BookInfo>
-                }
+        when (val result = getBooksUseCase.invoke(order)) {
+            is BookFetchStatus.BookFetchSuccess -> {
+                bookInfoList = result.bookList as MutableList<BookInfo>
+            }
 
-                is BookFetchStatus.BookFetchFailure -> {
-                    Log.d("BookShelfViewModel", "Api failure")
-                }
+            is BookFetchStatus.BookFetchFailure -> {
+                Log.d("BookShelfViewModel", "Api failure")
             }
         }
         return bookInfoList
@@ -77,7 +83,6 @@ class BookShelfViewModel @Inject constructor(
                         bookItemList.sortedBy {
                             it.title
                         }
-
                         return bookItemList
                     }
 

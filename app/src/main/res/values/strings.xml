@@ -27,6 +27,10 @@
     <string name="ascending_order">Ascending order</string>
     <string name="log_out">Log out</string>
     <string name="bookshelf">BookShelf</string>
+    <string name="number_of_hits">Hits: %s</string>
+    <string name="book_list_ui_error_message">Something went wrong. Please try again</string>
+    <string name="try_again">Try again</string>
+    <string name="sort_the_books">Sort the books</string>
 
 
 </resources>
