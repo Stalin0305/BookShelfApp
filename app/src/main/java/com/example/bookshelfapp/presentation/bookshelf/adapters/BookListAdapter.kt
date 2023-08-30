@@ -41,10 +41,8 @@ class BookListAdapter(
         )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: List<BookItem>) {
         bookItemList = list
-        notifyDataSetChanged()
     }
 
 

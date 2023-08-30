@@ -31,6 +31,10 @@ class BookShelfViewModel @Inject constructor(
     private val _bookListFlow = MutableStateFlow<BookListUiState?>(null)
     val bookListFlow: StateFlow<BookListUiState?> = _bookListFlow
 
+    var finalBookItemList: MutableList<BookItem> = mutableListOf()
+    var bookList: List<BookInfo> = mutableListOf()
+    var favouritesList: ArrayList<String>? = arrayListOf()
+
     fun fetchBookListAndFavourites(order: BooksOrder) {
         _bookListFlow.value = BookListUiState.BookListUILoadingState
         viewModelScope.launch {
@@ -42,14 +46,14 @@ class BookShelfViewModel @Inject constructor(
                 getBooksList(order)
             }
 
-            val favouritesList = favouritesFetchJob.await()
-            val bookList = bookListJob.await()
+            favouritesList = favouritesFetchJob.await()
+            bookList = bookListJob.await()
 
-            val finalList = mapBookInfoAndFavourites(favouritesList, bookList, order) as MutableList<BookItem>
-            if (finalList.isEmpty()) {
+            finalBookItemList = mapBookInfoAndFavourites(favouritesList, bookList, order) as MutableList<BookItem>
+            if (finalBookItemList.isEmpty()) {
                 _bookListFlow.value = BookListUiState.BookListUIErrorState
             } else {
-                _bookListFlow.value = BookListUiState.BookListUISuccessState(finalList)
+                _bookListFlow.value = BookListUiState.BookListUISuccessState(finalBookItemList)
             }
         }
     }
@@ -80,10 +84,9 @@ class BookShelfViewModel @Inject constructor(
                         val bookItemList = BookInfoMapper.mapBookInfoNetworkResponse(
                             bookList, favouriteList
                         )
-                        bookItemList.sortedBy {
-                            it.title
+                        return bookItemList.sortedBy {
+                            it.title.lowercase()
                         }
-                        return bookItemList
                     }
 
                     is BooksOrder.Hits -> {
@@ -91,11 +94,9 @@ class BookShelfViewModel @Inject constructor(
                         val bookItemList = BookInfoMapper.mapBookInfoNetworkResponse(
                             bookList, favouriteList
                         )
-                        bookItemList.sortedBy {
+                        return bookItemList.sortedBy {
                             it.hits
                         }
-
-                        return bookItemList
                     }
 
                     is BooksOrder.Favs -> {
@@ -104,17 +105,24 @@ class BookShelfViewModel @Inject constructor(
                             bookList, favouriteList
                         )
 
-                        bookItemList.sortedBy {
-                            it.title
+                        val sortedList = bookItemList.sortedBy {
+                            it.title.lowercase()
                         }
 
-                        val modifiedBookList = bookItemList as MutableList<BookItem>
-
-                        bookItemList.forEachIndexed { index, bookItem ->
+                        val itemsToRemove = mutableListOf<BookItem>()
+                        val modifiedBookList = sortedList.toMutableList()
+                        bookItemList.forEach { bookItem ->
                             if (bookItem.isFavourite) {
-                                modifiedBookList.removeAt(index)
-                                modifiedBookList.add(0, bookItem)
+                                itemsToRemove.add(bookItem)
                             }
+                        }
+
+                        modifiedBookList.removeIf {
+                            it.isFavourite
+                        }
+
+                        itemsToRemove.forEach {
+                            modifiedBookList.add(0, it)
                         }
 
                         return modifiedBookList
@@ -128,11 +136,9 @@ class BookShelfViewModel @Inject constructor(
                         val bookItemList = BookInfoMapper.mapBookInfoNetworkResponse(
                             bookList, favouriteList
                         )
-                        bookItemList.sortedByDescending {
-                            it.title
+                        return bookItemList.sortedByDescending {
+                            it.title.lowercase()
                         }
-
-                        return bookItemList
                     }
 
                     is BooksOrder.Hits -> {
@@ -140,11 +146,9 @@ class BookShelfViewModel @Inject constructor(
                         val bookItemList = BookInfoMapper.mapBookInfoNetworkResponse(
                             bookList, favouriteList
                         )
-                        bookItemList.sortedByDescending {
+                        return bookItemList.sortedByDescending {
                             it.hits
                         }
-
-                        return bookItemList
                     }
 
                     is BooksOrder.Favs -> {
@@ -153,17 +157,24 @@ class BookShelfViewModel @Inject constructor(
                             bookList, favouriteList
                         )
 
-                        bookItemList.sortedBy {
-                            it.title
+                        val sortedList = bookItemList.sortedBy {
+                            it.title.lowercase()
                         }
 
-                        val modifiedBookList = bookItemList as MutableList<BookItem>
-
-                        bookItemList.forEachIndexed { index, bookItem ->
+                        val itemsToRemove = mutableListOf<BookItem>()
+                        val modifiedBookList = sortedList.toMutableList()
+                        bookItemList.forEach { bookItem ->
                             if (bookItem.isFavourite) {
-                                modifiedBookList.removeAt(index)
-                                modifiedBookList.add(bookItem)
+                                itemsToRemove.add(bookItem)
                             }
+                        }
+
+                        modifiedBookList.removeIf {
+                            it.isFavourite
+                        }
+
+                        itemsToRemove.forEach {
+                            modifiedBookList.add(it)
                         }
 
                         return modifiedBookList
@@ -171,5 +182,9 @@ class BookShelfViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun sortBookListBasedOnOrder(order: BooksOrder): List<BookItem> {
+        return mapBookInfoAndFavourites(favouritesList, bookList, order)
     }
 }

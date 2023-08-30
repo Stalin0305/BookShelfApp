@@ -1,6 +1,7 @@
 package com.example.bookshelfapp.presentation.bookshelf
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.example.bookshelfapp.presentation.auth.AuthViewModel
 import com.example.bookshelfapp.presentation.bookshelf.adapters.BookListAdapter
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiState
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,6 +42,8 @@ class HomeFragment : Fragment() {
 
     private var currentSortType: BooksOrder = BooksOrder.Title(currentSortOrderType)
 
+    private var bookListAdapter: BookListAdapter? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,15 +55,76 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeViews()
+        clickListeners()
+        setObservers()
+    }
 
-        bookShelfViewModel.fetchBookListAndFavourites(BooksOrder.Title(OrderType.Ascending))
+    private fun initializeViews() {
+        bookShelfViewModel.fetchBookListAndFavourites(currentSortType)
+        binding.sortChipGroup.check(R.id.titleChip)
+        binding.switchAscendingOrder.isChecked = true
 
+        bookListAdapter = BookListAdapter(
+            bookItemList = bookShelfViewModel.finalBookItemList,
+            onBookItemClicked =  {},
+            onFavouriteIconClicked = {}
+        )
+        binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvBooks.adapter = bookListAdapter
+    }
+
+    private fun clickListeners() {
         binding.toolbar.logOutButton.setOnClickListener {
             authViewModel.logOut()
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
 
-        setObservers()
+        binding.sortChipGroup.setOnCheckedStateChangeListener { chipGroup, checkedId ->
+            if (checkedId.isNotEmpty()) {
+                val chipName = chipGroup.findViewById<Chip>(checkedId[0]).text
+                when (chipName.toString()) {
+                    getString(R.string.hits_chip) -> {
+                        Log.d("HomeFragment", chipName.toString())
+                        currentSortType = BooksOrder.Hits(currentSortOrderType)
+                        refreshSortOrder()
+
+                    }
+
+                    getString(R.string.title_chip) -> {
+                        Log.d("HomeFragment", chipName.toString())
+                        currentSortType = BooksOrder.Title(currentSortOrderType)
+                        refreshSortOrder()
+
+                    }
+
+                    getString(R.string.favs_chip) -> {
+                        currentSortType = BooksOrder.Favs(currentSortOrderType)
+                        refreshSortOrder()
+                    }
+                }
+            }
+        }
+
+        binding.switchAscendingOrder.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Log.d("HomeFragment", "Switch is checked")
+                currentSortOrderType = OrderType.Ascending
+                currentSortType.orderType = currentSortOrderType
+                refreshSortOrder()
+            } else {
+                currentSortOrderType = OrderType.Descending
+                currentSortType.orderType = currentSortOrderType
+                refreshSortOrder()
+            }
+        }
+
+    }
+
+    private fun refreshSortOrder() {
+        val sortedList = bookShelfViewModel.sortBookListBasedOnOrder(currentSortType)
+        bookListAdapter?.updateList(sortedList)
+        bookListAdapter?.notifyDataSetChanged()
     }
 
     private fun setObservers() {
@@ -88,13 +153,8 @@ class HomeFragment : Fragment() {
         hideProgressBar()
         binding.layoutError.clBookListError.isVisible = false
         binding.rvBooks.isVisible = true
-        val adapter = BookListAdapter(
-            bookItemList = bookList as MutableList<BookItem>,
-            onBookItemClicked =  {},
-            onFavouriteIconClicked = {}
-        )
-        binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvBooks.adapter = adapter
+        bookListAdapter?.updateList(bookList)
+        bookListAdapter?.notifyDataSetChanged()
 
     }
 

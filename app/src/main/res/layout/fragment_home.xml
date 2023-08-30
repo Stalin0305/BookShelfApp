@@ -44,7 +44,7 @@
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip1"
+                android:id="@+id/titleChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 android:text="@string/title_chip" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip2"
+                android:id="@+id/hitsChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:text="@string/hits_chip" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip3"
+                android:id="@+id/favsChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
