@@ -61,8 +61,9 @@ class HomeFragment : Fragment() {
 
     private fun initializeViews() {
         bookShelfViewModel.fetchBookListAndFavourites(bookShelfViewModel.currentSortType)
-        binding.sortChipGroup.check(R.id.titleChip)
-        binding.switchAscendingOrder.isChecked = true
+        val result = getChipIdAndSortOrderType()
+        binding.sortChipGroup.check(result.first)
+        binding.switchAscendingOrder.isChecked = result.second
 
         bookListAdapter = BookListAdapter(
             bookItemList = bookShelfViewModel.finalBookItemList,
@@ -222,6 +223,34 @@ class HomeFragment : Fragment() {
     }
 
     private fun hideProgressBar() = run { binding.progressBar.isVisible = false }
+
+    private fun getChipIdAndSortOrderType(): Pair<Int, Boolean> {
+        return when (bookShelfViewModel.currentSortType) {
+            is BooksOrder.Favs -> {
+                var isChecked = false
+                if (bookShelfViewModel.currentSortType.orderType == OrderType.Ascending) {
+                    isChecked = true
+                }
+                Pair(R.id.favsChip, isChecked)
+            }
+
+            is BooksOrder.Hits -> {
+                var isChecked = false
+                if (bookShelfViewModel.currentSortType.orderType == OrderType.Ascending) {
+                    isChecked = true
+                }
+                Pair(R.id.hitsChip, isChecked)
+            }
+
+            is BooksOrder.Title -> {
+                var isChecked = false
+                if (bookShelfViewModel.currentSortType.orderType == OrderType.Ascending) {
+                    isChecked = true
+                }
+                Pair(R.id.titleChip, isChecked)
+            }
+        }
+    }
 
 
 }

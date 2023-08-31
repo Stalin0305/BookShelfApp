@@ -13,7 +13,7 @@
 
         <!-- ToolBar widget -->
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarHome"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
@@ -33,7 +33,7 @@
             style="@style/TextAppearance.Material3.BodyLarge"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/toolbarHome"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

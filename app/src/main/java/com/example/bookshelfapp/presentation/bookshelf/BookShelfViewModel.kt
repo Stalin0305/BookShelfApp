@@ -17,6 +17,7 @@ import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiSt
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.RemoveFavouriteUIState
 import com.example.bookshelfapp.utils.EMPTY_STRING
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,7 +55,7 @@ class BookShelfViewModel @Inject constructor(
 
     fun fetchBookListAndFavourites(order: BooksOrder) {
         _bookListFlow.value = BookListUiState.BookListUILoadingState
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val favouritesFetchJob = async {
                 currentUserInfo?.uid?.let { authRepositoryImpl.getFavourites(it) }
             }
