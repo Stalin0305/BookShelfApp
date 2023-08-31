@@ -14,7 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.bookshelfapp.R
 import com.example.bookshelfapp.data.models.AuthState
+import com.example.bookshelfapp.data.utils.Constants
 import com.example.bookshelfapp.databinding.FragmentRegistrationBinding
+import com.example.bookshelfapp.utils.EMPTY_STRING
+import com.example.bookshelfapp.utils.SharedPreferenceUtil
 import com.example.bookshelfapp.utils.checkIfPasswordIsValid
 import com.example.bookshelfapp.utils.checkIfEmailIsValid
 import com.example.bookshelfapp.utils.setTextWatcher
@@ -31,6 +34,8 @@ class RegistrationFragment : Fragment() {
     private val viewModel by viewModels<AuthViewModel>()
     private val binding get() = _binding!!
     var countrySelected: String = ""
+
+    private var sharedPreferenceUtil: SharedPreferenceUtil? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +46,8 @@ class RegistrationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedPreferenceUtil = SharedPreferenceUtil(requireContext())
 
         val adapter = ArrayAdapter(
             requireContext(),
@@ -127,9 +134,13 @@ class RegistrationFragment : Fragment() {
                     }
                     is AuthState.Success -> {
                         hideProgressBar()
+                        sharedPreferenceUtil?.saveString(
+                            Constants.USER_UID,
+                            viewModel.currentUser?.uid ?: EMPTY_STRING
+                        )
                         val dir =
                             RegistrationFragmentDirections.actionRegistrationFragmentToHomeFragment(
-                                viewModel.currentUser
+                                viewModel.currentUser?.uid
                             )
                         findNavController().navigate(dir)
                     }

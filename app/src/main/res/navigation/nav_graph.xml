@@ -50,8 +50,8 @@
             app:destination="@id/loginFragment" />
         <argument
             app:nullable="true"
-            android:name="currentUserInfo"
-            app:argType="com.example.bookshelfapp.data.models.UserInfo"/>
+            android:name="userId"
+            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/bookDetailFragment"

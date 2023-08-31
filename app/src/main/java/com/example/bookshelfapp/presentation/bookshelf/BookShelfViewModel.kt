@@ -33,7 +33,7 @@ class BookShelfViewModel @Inject constructor(
     private val authRepositoryImpl: AuthRepositoryImpl
 ) : ViewModel() {
 
-    var currentUserInfo: UserInfo? = null
+    var userUid: String? = null
 
     private val _bookListFlow = MutableStateFlow<BookListUiState?>(null)
     val bookListFlow: StateFlow<BookListUiState?> = _bookListFlow
@@ -57,7 +57,7 @@ class BookShelfViewModel @Inject constructor(
         _bookListFlow.value = BookListUiState.BookListUILoadingState
         viewModelScope.launch(Dispatchers.IO) {
             val favouritesFetchJob = async {
-                currentUserInfo?.uid?.let { authRepositoryImpl.getFavourites(it) }
+                userUid?.let { authRepositoryImpl.getFavourites(it) }
             }
 
             val bookListJob = async {
@@ -209,7 +209,7 @@ class BookShelfViewModel @Inject constructor(
     fun addToFavourites(bookItem: BookItem, position: Int) {
         viewModelScope.launch {
             val result = authRepositoryImpl.addToFavourites(
-                currentUserInfo?.uid ?: EMPTY_STRING,
+                userUid ?: EMPTY_STRING,
                 bookItem.id
             )
             if (result.isEmpty()) {
@@ -225,7 +225,7 @@ class BookShelfViewModel @Inject constructor(
     fun removeFromFavourites(bookItem: BookItem, position: Int) {
         viewModelScope.launch {
             val result = authRepositoryImpl.removeFromFavourites(
-                currentUserInfo?.uid ?: EMPTY_STRING,
+                userUid ?: EMPTY_STRING,
                 bookItem.id
             )
             if (result.isEmpty()) {

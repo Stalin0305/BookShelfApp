@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookshelfapp.R
 import com.example.bookshelfapp.data.utils.BooksOrder
+import com.example.bookshelfapp.data.utils.Constants
 import com.example.bookshelfapp.data.utils.OrderType
 import com.example.bookshelfapp.databinding.FragmentHomeBinding
 import com.example.bookshelfapp.presentation.auth.AuthViewModel
@@ -23,6 +24,8 @@ import com.example.bookshelfapp.presentation.bookshelf.placeholders.AddFavourite
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookItem
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.BookListUiState
 import com.example.bookshelfapp.presentation.bookshelf.placeholders.RemoveFavouriteUIState
+import com.example.bookshelfapp.utils.EMPTY_STRING
+import com.example.bookshelfapp.utils.SharedPreferenceUtil
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -43,17 +46,23 @@ class HomeFragment : Fragment() {
 
     private var bookListAdapter: BookListAdapter? = null
 
+    private var sharedPreferenceUtil: SharedPreferenceUtil? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        bookShelfViewModel.currentUserInfo = args.currentUserInfo
+        bookShelfViewModel.userUid = args.userId
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Initialize sharePreference manager
+        sharedPreferenceUtil = SharedPreferenceUtil(requireContext())
+
         initializeViews()
         clickListeners()
         setObservers()
@@ -86,6 +95,7 @@ class HomeFragment : Fragment() {
     private fun clickListeners() {
         binding.toolbarHome.logOutButton.setOnClickListener {
             authViewModel.logOut()
+            sharedPreferenceUtil?.saveString(Constants.USER_UID, EMPTY_STRING)
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
 

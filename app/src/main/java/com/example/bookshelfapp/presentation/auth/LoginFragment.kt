@@ -12,7 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.bookshelfapp.R
 import com.example.bookshelfapp.data.models.AuthState
+import com.example.bookshelfapp.data.utils.Constants
 import com.example.bookshelfapp.databinding.FragmentLoginBinding
+import com.example.bookshelfapp.utils.EMPTY_STRING
+import com.example.bookshelfapp.utils.SharedPreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -24,6 +27,8 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<AuthViewModel>()
+
+    private var sharedPreferenceUtil: SharedPreferenceUtil? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +40,19 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Set sharedPreference manager and navigate to Home if the user is already logged in
+        sharedPreferenceUtil = SharedPreferenceUtil(requireContext())
+
+        val userId = sharedPreferenceUtil?.getString(Constants.USER_UID)
+
+        if (!userId.isNullOrEmpty()) {
+            val dir = LoginFragmentDirections.actionLoginFragmentToHomeFragment(
+                userId
+            )
+            findNavController().navigate(dir)
+        }
+
         setOnClickListeners()
         setObservers()
     }
@@ -70,8 +88,12 @@ class LoginFragment : Fragment() {
 
                     is AuthState.Success -> {
                         hideProgressBar()
+                        sharedPreferenceUtil?.saveString(
+                            Constants.USER_UID,
+                            viewModel.currentUser?.uid ?: EMPTY_STRING
+                        )
                         val dir = LoginFragmentDirections.actionLoginFragmentToHomeFragment(
-                            viewModel.currentUser
+                            viewModel.currentUser?.uid
                         )
                         findNavController().navigate(dir)
                         Log.d("Login", "Success")

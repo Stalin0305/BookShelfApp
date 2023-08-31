@@ -11,4 +11,8 @@ object Constants {
     const val FAVOURITE_LIST = "favouritesList"
 
     const val BASE_URL = "https://www.jsonkeeper.com"
+
+    //Shared pref
+    const val SHARED_PREF_NAME = "BookShelfSharedPref"
+    const val USER_UID = "userUid"
 }
