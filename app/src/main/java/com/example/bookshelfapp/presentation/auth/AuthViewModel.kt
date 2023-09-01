@@ -9,6 +9,7 @@ import com.example.bookshelfapp.data.models.AuthState
 import com.example.bookshelfapp.data.models.CountryData
 import com.example.bookshelfapp.data.models.UserInfo
 import com.example.bookshelfapp.data.repository.auth.AuthRepositoryImpl
+import com.example.bookshelfapp.utils.EMPTY_STRING
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -32,6 +33,12 @@ class AuthViewModel @Inject constructor(
     val loginFlow: StateFlow<AuthState?> = _loginFlow
     var currentUser: UserInfo? = null
     var countryList = listOf<String>()
+
+    var userName: String = EMPTY_STRING
+    var email: String = EMPTY_STRING
+    var password: String = EMPTY_STRING
+    var selectedCountry: String = EMPTY_STRING
+
     init {
         if (repositoryImpl.currentUser != null && currentUser != null) {
             _loginFlow.value = AuthState.Success(currentUser!!)

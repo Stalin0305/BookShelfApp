@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/four_dp"
                     android:text="@string/login"
-                    android:textColor="@color/dark_blue" />
+                    android:textColor="@color/light_blue" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

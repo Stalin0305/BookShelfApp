@@ -69,7 +69,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initializeViews() {
-        bookShelfViewModel.fetchBookListAndFavourites(bookShelfViewModel.currentSortType)
         val result = getChipIdAndSortOrderType()
         binding.sortChipGroup.check(result.first)
         binding.switchAscendingOrder.isChecked = result.second

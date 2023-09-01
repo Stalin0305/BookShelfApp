@@ -16,6 +16,7 @@ import com.example.bookshelfapp.data.utils.Constants
 import com.example.bookshelfapp.databinding.FragmentLoginBinding
 import com.example.bookshelfapp.utils.EMPTY_STRING
 import com.example.bookshelfapp.utils.SharedPreferenceUtil
+import com.example.bookshelfapp.utils.setTextWatcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -51,6 +52,17 @@ class LoginFragment : Fragment() {
                 userId
             )
             findNavController().navigate(dir)
+        }
+
+        binding.etEmail.editText?.setText(viewModel.email)
+        binding.etPassword.editText?.setText(viewModel.password)
+
+        binding.etEmail.setTextWatcher(binding.etEmail) {
+            viewModel.email = it
+        }
+
+        binding.etPassword.setTextWatcher(binding.etPassword) {
+            viewModel.password = it
         }
 
         setOnClickListeners()

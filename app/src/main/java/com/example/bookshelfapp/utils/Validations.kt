@@ -45,7 +45,7 @@ fun String.checkIfEmailIsValid(): String {
     return EMPTY_STRING
 }
 
-fun TextInputLayout.setTextWatcher(editText: TextInputLayout) {
+fun TextInputLayout.setTextWatcher(editText: TextInputLayout, onTextChanged:(String) -> Unit) {
     this.editText?.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -53,6 +53,7 @@ fun TextInputLayout.setTextWatcher(editText: TextInputLayout) {
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             editText.error = null
+            onTextChanged(p0.toString())
         }
 
         override fun afterTextChanged(p0: Editable?) {

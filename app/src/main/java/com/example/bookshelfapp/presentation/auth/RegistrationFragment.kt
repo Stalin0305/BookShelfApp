@@ -55,8 +55,20 @@ class RegistrationFragment : Fragment() {
             viewModel.countryList
         )
         binding.countrySpinner.adapter = adapter
-        binding.etPassword.setTextWatcher(binding.etPassword)
-        binding.etEmail.setTextWatcher(binding.etEmail)
+
+        binding.etUserName.editText?.setText(viewModel.userName)
+        binding.etEmail.editText?.setText(viewModel.email)
+        binding.etPassword.editText?.setText(viewModel.password)
+        binding.etPassword.setTextWatcher(binding.etPassword) {
+            viewModel.password = it
+        }
+        binding.etEmail.setTextWatcher(binding.etEmail) {
+            viewModel.email = it
+        }
+
+        binding.etUserName.setTextWatcher(binding.etUserName) {
+            viewModel.userName = it
+        }
 
         setOnClickListeners()
         setObservers()
@@ -72,6 +84,7 @@ class RegistrationFragment : Fragment() {
                 view: View?, position: Int, id: Long
             ) {
                 countrySelected = viewModel.countryList[position]
+                viewModel.selectedCountry = countrySelected
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
